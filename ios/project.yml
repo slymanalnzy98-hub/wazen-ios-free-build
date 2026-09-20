@@ -1,0 +1,26 @@
+name: WAZEN
+options:
+  bundleIdPrefix: com.wazen
+  deploymentTarget:
+    iOS: "17.0"
+
+targets:
+  WAZEN:
+    type: application
+    platform: iOS
+    sources:
+      - path: WazenApp.swift
+      - path: WazenWebView.swift
+      - path: MotionStepsBridge.swift
+    dependencies:
+      - sdk: CoreMotion.framework
+      - sdk: WebKit.framework
+    info:
+      path: Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wazen.personal
+        PRODUCT_NAME: WAZEN
+        SWIFT_VERSION: 5.0
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
