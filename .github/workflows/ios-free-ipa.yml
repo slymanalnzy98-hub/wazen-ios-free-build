@@ -1,0 +1,63 @@
+name: Build WAZEN Free iPhone IPA
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-unsigned-ipa:
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Verify free iPhone contract
+        run: node tests/ios-free-coremotion-contract.js
+
+      - name: Validate Info.plist
+        run: plutil -lint ios/Info.plist
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build iPhone app without signing
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -project WAZEN.xcodeproj \
+            -scheme WAZEN \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package unsigned IPA
+        working-directory: ios
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/WAZEN.app"
+          test -d "$APP_PATH"
+          rm -rf Payload WAZEN-Free-iPhone-V1-unsigned.ipa
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/WAZEN.app
+          zip -qry WAZEN-Free-iPhone-V1-unsigned.ipa Payload
+          unzip -l WAZEN-Free-iPhone-V1-unsigned.ipa
+          test -s WAZEN-Free-iPhone-V1-unsigned.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WAZEN-Free-iPhone-V1-unsigned-IPA
+          path: ios/WAZEN-Free-iPhone-V1-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
