@@ -1,0 +1,27 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+const bridge=fs.readFileSync('ios/MotionStepsBridge.swift','utf8');
+const webView=fs.readFileSync('ios/WazenWebView.swift','utf8');
+const project=fs.readFileSync('ios/project.yml','utf8');
+const info=fs.readFileSync('ios/Info.plist','utf8');
+const workflow=fs.readFileSync('.github/workflows/ios-free-ipa.yml','utf8');
+
+assert.match(bridge,/import CoreMotion/);
+assert.doesNotMatch(bridge,/import HealthKit/);
+assert.match(bridge,/CMPedometer/);
+assert.match(bridge,/queryPedometerData/);
+assert.match(bridge,/source": "iPhone Motion"/);
+assert.match(bridge,/message\.frameInfo\.isMainFrame/);
+assert.match(info,/NSMotionUsageDescription/);
+assert.doesNotMatch(info,/NSHealthShareUsageDescription|NSHealthUpdateUsageDescription/);
+assert.match(project,/CoreMotion\.framework/);
+assert.doesNotMatch(project,/HealthKit\.framework|CODE_SIGN_ENTITLEMENTS/);
+assert.match(webView,/wazen-personal\.onrender\.com/);
+assert.match(webView,/UIApplication\.didBecomeActiveNotification/);
+assert.match(workflow,/macos-15/);
+assert.match(workflow,/CODE_SIGNING_ALLOWED=NO/);
+assert.match(workflow,/WAZEN-Free-iPhone-V1-unsigned\.ipa/);
+assert.match(workflow,/actions\/upload-artifact@v4/);
+
+console.log('WAZEN free iPhone Core Motion contract passed');
