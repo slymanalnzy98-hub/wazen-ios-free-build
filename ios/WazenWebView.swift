@@ -13,10 +13,13 @@ struct WazenWebView: UIViewRepresentable {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.websiteDataStore = .default()
+        configuration.allowsInlineMediaPlayback = true
+        configuration.mediaTypesRequiringUserActionForPlayback = []
         configuration.userContentController.add(context.coordinator.motionBridge, name: "healthkitBridge")
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.scrollView.backgroundColor = UIColor(red: 0.012, green: 0.027, blue: 0.051, alpha: 1)
         webView.backgroundColor = UIColor(red: 0.012, green: 0.027, blue: 0.051, alpha: 1)
@@ -129,7 +132,7 @@ struct WazenWebView: UIViewRepresentable {
         webView.loadHTMLString(fallback, baseURL: nil)
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate {
+    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         let motionBridge = MotionStepsBridge()
 
         private var readinessTask: URLSessionDataTask?
@@ -229,6 +232,23 @@ struct WazenWebView: UIViewRepresentable {
                 UIApplication.shared.open(url)
             }
             decisionHandler(.cancel)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+            initiatedByFrame frame: WKFrameInfo,
+            type: WKMediaCaptureType,
+            decisionHandler: @escaping (WKPermissionDecision) -> Void
+        ) {
+            guard origin.protocol.lowercased() == "https",
+                  origin.host.lowercased() == WazenWebView.trustedHost,
+                  (origin.port == 0 || origin.port == 443),
+                  type == .camera else {
+                decisionHandler(.deny)
+                return
+            }
+            decisionHandler(.grant)
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
