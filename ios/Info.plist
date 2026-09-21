@@ -8,6 +8,8 @@
     <dict/>
     <key>UIUserInterfaceStyle</key>
     <string>Dark</string>
+    <key>NSCameraUsageDescription</key>
+    <string>يستخدم WAZEN الكاميرا لمسح باركود المنتجات والتعرف عليها داخل التطبيق.</string>
     <key>NSMotionUsageDescription</key>
     <string>يستخدم WAZEN حركة iPhone لقراءة خطوات اليوم تلقائيًا وعرضها داخل التطبيق.</string>
 </dict>
