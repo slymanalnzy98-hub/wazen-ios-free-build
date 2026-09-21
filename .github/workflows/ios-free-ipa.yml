@@ -42,6 +42,14 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             build
 
+      - name: Verify built privacy key
+        working-directory: ios
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/WAZEN.app"
+          test -d "$APP_PATH"
+          /usr/libexec/PlistBuddy -c "Print :NSMotionUsageDescription" "$APP_PATH/Info.plist"
+          plutil -p "$APP_PATH/Info.plist" | grep -q "NSMotionUsageDescription"
+
       - name: Package unsigned IPA
         working-directory: ios
         run: |

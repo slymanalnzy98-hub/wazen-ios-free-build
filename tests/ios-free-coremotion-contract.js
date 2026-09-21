@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
+const app=fs.readFileSync('ios/WazenApp.swift','utf8');
 const bridge=fs.readFileSync('ios/MotionStepsBridge.swift','utf8');
 const webView=fs.readFileSync('ios/WazenWebView.swift','utf8');
 const project=fs.readFileSync('ios/project.yml','utf8');
@@ -18,9 +19,14 @@ assert.doesNotMatch(info,/NSHealthShareUsageDescription|NSHealthUpdateUsageDescr
 assert.match(project,/CoreMotion\.framework/);
 assert.doesNotMatch(project,/HealthKit\.framework|CODE_SIGN_ENTITLEMENTS/);
 assert.match(webView,/wazen-personal\.onrender\.com/);
+assert.match(webView,/\/healthz/);
+assert.match(webView,/loadStartupScreen/);
+assert.match(webView,/sizeThatFits/);
 assert.match(webView,/UIApplication\.didBecomeActiveNotification/);
+assert.match(app,/frame\(maxWidth: \.infinity, maxHeight: \.infinity\)/);
 assert.match(workflow,/macos-15/);
 assert.match(workflow,/CODE_SIGNING_ALLOWED=NO/);
+assert.match(workflow,/NSMotionUsageDescription/);
 assert.match(workflow,/WAZEN-Free-iPhone-V1-unsigned\.ipa/);
 assert.match(workflow,/actions\/upload-artifact@v4/);
 
