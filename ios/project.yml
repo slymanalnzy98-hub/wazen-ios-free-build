@@ -17,6 +17,11 @@ targets:
       - sdk: WebKit.framework
     info:
       path: Info.plist
+      properties:
+        CFBundleDisplayName: WAZEN
+        UILaunchScreen: {}
+        UIUserInterfaceStyle: Dark
+        NSMotionUsageDescription: "يستخدم WAZEN حركة iPhone لقراءة خطوات اليوم تلقائيًا وعرضها داخل التطبيق."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wazen.personal

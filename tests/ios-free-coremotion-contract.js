@@ -18,6 +18,8 @@ assert.match(info,/NSMotionUsageDescription/);
 assert.doesNotMatch(info,/NSHealthShareUsageDescription|NSHealthUpdateUsageDescription/);
 assert.match(project,/CoreMotion\.framework/);
 assert.doesNotMatch(project,/HealthKit\.framework|CODE_SIGN_ENTITLEMENTS/);
+assert.match(project,/NSMotionUsageDescription/);
+assert.match(project,/UILaunchScreen/);
 assert.match(webView,/wazen-personal\.onrender\.com/);
 assert.match(webView,/\/healthz/);
 assert.match(webView,/loadStartupScreen/);
@@ -27,6 +29,7 @@ assert.match(app,/frame\(maxWidth: \.infinity, maxHeight: \.infinity\)/);
 assert.match(workflow,/macos-15/);
 assert.match(workflow,/CODE_SIGNING_ALLOWED=NO/);
 assert.match(workflow,/NSMotionUsageDescription/);
+assert.match(workflow,/UILaunchScreen/);
 assert.match(workflow,/WAZEN-Free-iPhone-V1-unsigned\.ipa/);
 assert.match(workflow,/actions\/upload-artifact@v4/);
 

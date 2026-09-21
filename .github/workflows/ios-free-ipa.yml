@@ -21,12 +21,20 @@ jobs:
       - name: Verify free iPhone contract
         run: node tests/ios-free-coremotion-contract.js
 
-      - name: Validate Info.plist
+      - name: Validate source Info.plist
         run: plutil -lint ios/Info.plist
 
       - name: Generate Xcode project
         working-directory: ios
         run: xcodegen generate
+
+      - name: Verify generated Info.plist
+        working-directory: ios
+        run: |
+          /usr/libexec/PlistBuddy -c "Print :NSMotionUsageDescription" Info.plist
+          /usr/libexec/PlistBuddy -c "Print :UILaunchScreen" Info.plist
+          plutil -p Info.plist | grep -q "NSMotionUsageDescription"
+          plutil -p Info.plist | grep -q "UILaunchScreen"
 
       - name: Build iPhone app without signing
         working-directory: ios
@@ -42,13 +50,15 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             build
 
-      - name: Verify built privacy key
+      - name: Verify built privacy and launch keys
         working-directory: ios
         run: |
           APP_PATH="build/Build/Products/Release-iphoneos/WAZEN.app"
           test -d "$APP_PATH"
           /usr/libexec/PlistBuddy -c "Print :NSMotionUsageDescription" "$APP_PATH/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :UILaunchScreen" "$APP_PATH/Info.plist"
           plutil -p "$APP_PATH/Info.plist" | grep -q "NSMotionUsageDescription"
+          plutil -p "$APP_PATH/Info.plist" | grep -q "UILaunchScreen"
 
       - name: Package unsigned IPA
         working-directory: ios
