@@ -32,8 +32,10 @@ jobs:
         working-directory: ios
         run: |
           /usr/libexec/PlistBuddy -c "Print :NSMotionUsageDescription" Info.plist
+          /usr/libexec/PlistBuddy -c "Print :NSCameraUsageDescription" Info.plist
           /usr/libexec/PlistBuddy -c "Print :UILaunchScreen" Info.plist
           plutil -p Info.plist | grep -q "NSMotionUsageDescription"
+          plutil -p Info.plist | grep -q "NSCameraUsageDescription"
           plutil -p Info.plist | grep -q "UILaunchScreen"
 
       - name: Build iPhone app without signing
@@ -56,8 +58,10 @@ jobs:
           APP_PATH="build/Build/Products/Release-iphoneos/WAZEN.app"
           test -d "$APP_PATH"
           /usr/libexec/PlistBuddy -c "Print :NSMotionUsageDescription" "$APP_PATH/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :NSCameraUsageDescription" "$APP_PATH/Info.plist"
           /usr/libexec/PlistBuddy -c "Print :UILaunchScreen" "$APP_PATH/Info.plist"
           plutil -p "$APP_PATH/Info.plist" | grep -q "NSMotionUsageDescription"
+          plutil -p "$APP_PATH/Info.plist" | grep -q "NSCameraUsageDescription"
           plutil -p "$APP_PATH/Info.plist" | grep -q "UILaunchScreen"
 
       - name: Package unsigned IPA
