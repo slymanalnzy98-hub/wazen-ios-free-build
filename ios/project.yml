@@ -21,6 +21,7 @@ targets:
         CFBundleDisplayName: WAZEN
         UILaunchScreen: {}
         UIUserInterfaceStyle: Dark
+        NSCameraUsageDescription: "يستخدم WAZEN الكاميرا لمسح باركود المنتجات والتعرف عليها داخل التطبيق."
         NSMotionUsageDescription: "يستخدم WAZEN حركة iPhone لقراءة خطوات اليوم تلقائيًا وعرضها داخل التطبيق."
     settings:
       base:
